@@ -19,6 +19,9 @@ type Process interface {
 	// Executable name running this process. This is not a path to the
 	// executable.
 	Executable() string
+
+	// The command line that this process was started with.
+	Cmdline() string
 }
 
 // Processes returns all processes.
@@ -37,4 +40,8 @@ func Processes() ([]Process, error) {
 // not found.
 func FindProcess(pid int) (Process, error) {
 	return findProcess(pid)
+}
+
+func FindProcessByCmdline(binary, cmdlinePattern string) (Process, error) {
+	return findProcessByCmdline(binary, cmdlinePattern)
 }

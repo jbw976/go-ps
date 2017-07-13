@@ -125,6 +125,10 @@ func (p *UnixProcess) Executable() string {
 	return p.binary
 }
 
+func (p *UnixProcess) Cmdline() string {
+	return ""
+}
+
 // Refresh reloads all the data associated with this process.
 func (p *UnixProcess) Refresh() error {
 
@@ -170,6 +174,10 @@ func findProcess(pid int) (Process, error) {
 	}
 
 	return newUnixProcess(pid)
+}
+
+func findProcessByCmdline(binary, cmdlinePattern string) (Process, error) {
+	return nil, nil
 }
 
 func processes() ([]Process, error) {

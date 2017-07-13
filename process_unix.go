@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
+	"regexp"
 	"strconv"
 )
 
@@ -18,7 +20,8 @@ type UnixProcess struct {
 	pgrp  int
 	sid   int
 
-	binary string
+	binary  string
+	cmdline string
 }
 
 func (p *UnixProcess) Pid() int {
@@ -33,6 +36,10 @@ func (p *UnixProcess) Executable() string {
 	return p.binary
 }
 
+func (p *UnixProcess) Cmdline() string {
+	return p.cmdline
+}
+
 func findProcess(pid int) (Process, error) {
 	dir := fmt.Sprintf("/proc/%d", pid)
 	_, err := os.Stat(dir)
@@ -45,6 +52,29 @@ func findProcess(pid int) (Process, error) {
 	}
 
 	return newUnixProcess(pid)
+}
+
+func findProcessByCmdline(binary, cmdlinePattern string) (Process, error) {
+	if cmdlinePattern == "" {
+		return nil, fmt.Errorf("no cmdline search pattern provided")
+	}
+
+	procs, err := processes()
+	if err != nil {
+		return nil, err
+	}
+
+	b := filepath.Base(binary)
+
+	for i := range procs {
+		if procs[i].Executable() == b {
+			if matched, _ := regexp.MatchString(cmdlinePattern, procs[i].Cmdline()); matched {
+				return procs[i], nil
+			}
+		}
+	}
+
+	return nil, nil
 }
 
 func processes() ([]Process, error) {

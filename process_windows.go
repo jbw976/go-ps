@@ -57,6 +57,10 @@ func (p *WindowsProcess) Executable() string {
 	return p.exe
 }
 
+func (p *WindowsProcess) Cmdline() string {
+	return ""
+}
+
 func newWindowsProcess(e *PROCESSENTRY32) *WindowsProcess {
 	// Find when the string ends for decoding
 	end := 0
@@ -86,6 +90,10 @@ func findProcess(pid int) (Process, error) {
 		}
 	}
 
+	return nil, nil
+}
+
+func findProcessByCmdline(binary, cmdlinePattern string) (Process, error) {
 	return nil, nil
 }
 

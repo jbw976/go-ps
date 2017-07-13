@@ -27,6 +27,10 @@ func (p *DarwinProcess) Executable() string {
 	return p.binary
 }
 
+func (p *DarwinProcess) Cmdline() string {
+	return ""
+}
+
 func findProcess(pid int) (Process, error) {
 	ps, err := processes()
 	if err != nil {
@@ -39,6 +43,10 @@ func findProcess(pid int) (Process, error) {
 		}
 	}
 
+	return nil, nil
+}
+
+func findProcessByCmdline(binary, cmdlinePattern string) (Process, error) {
 	return nil, nil
 }
 

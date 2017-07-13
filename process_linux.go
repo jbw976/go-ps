@@ -31,5 +31,14 @@ func (p *UnixProcess) Refresh() error {
 		&p.pgrp,
 		&p.sid)
 
+	// retrieve the cmdline for the process as well
+	cmdlineFilePath := fmt.Sprintf("/proc/%d/cmdline", p.pid)
+	dataBytes, err = ioutil.ReadFile(cmdlineFilePath)
+	if err != nil {
+		return err
+	}
+
+	p.cmdline = strings.TrimSpace(string(dataBytes))
+
 	return err
 }
